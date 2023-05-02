@@ -9,6 +9,12 @@ int main() {
     window.create(VideoMode::getDesktopMode(), "KeyBoardNinja", Style::Fullscreen);
     window.setFramerateLimit(60);
 
+    //Фон
+    RectangleShape background(Vector2f(1920, 1080));
+    Texture screen;
+    if (!screen.loadFromFile("Pictures/Background3.jpg")) return 1;
+    background.setTexture(&screen);
+
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
@@ -16,7 +22,8 @@ int main() {
                 if (ev.key.code == Keyboard::Escape) window.close();
             }
         }
-        window.clear(Color::Black);
+        window.clear();
+        window.draw(background);
         window.display();
     }
 
