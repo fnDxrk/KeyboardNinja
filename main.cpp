@@ -20,12 +20,6 @@ void initTextMenu(Text& text, Font& font, int size, String str, float xPos, floa
 
 }
 
-void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
-    window.draw(title);
-    window.draw(button1);
-    window.draw(button2);
-}
-
 void MoveUp(Text button[], int& number) {
     if (number - 1 >= -1) {
         button[number].setFillColor(Color::White);
@@ -46,12 +40,36 @@ void MoveDown(Text button[], int& number) {
     }
 }
 
-void windowGame() {
+void buttonStartCondition(Text buttonMenu[]) {
+    if (Mouse::getPosition().x >= 960 - 5 - buttonMenu[0].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y >= 700 - buttonMenu[0].getGlobalBounds().height / 2 &&
+        Mouse::getPosition().x <= 960 + buttonMenu[0].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y <= 700 + buttonMenu[0].getGlobalBounds().height / 2) {
+        buttonMenu[0].setFillColor(Color::Red);
+        buttonMenu[1].setFillColor(Color::White);
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            checkMode = 1;
+        }
+    }
+}
 
+void buttonExitCondition(Text buttonMenu[], RenderWindow& window) {
+    if (Mouse::getPosition().x >= 960 - 5 - buttonMenu[1].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y >= 800 - buttonMenu[1].getGlobalBounds().height / 2 &&
+        Mouse::getPosition().x <= 960 + buttonMenu[1].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y <= 800 + buttonMenu[1].getGlobalBounds().height / 2) {
+        buttonMenu[1].setFillColor(Color::Red);
+        buttonMenu[0].setFillColor(Color::White);
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            window.close();
+        }
+    }
 }
 
 void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     if (checkMode == 0) {
+        buttonStartCondition(buttonMenu);
+        buttonExitCondition(buttonMenu, window);
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
@@ -73,10 +91,26 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     }
 }
 
-void modeGame() {
+void modeGame(RenderWindow &window, Event &ev) {
     if (checkMode == 1) {
-
+        switch (ev.type) {
+            case Event::KeyPressed :
+                switch (ev.key.code) {
+                    case Keyboard::Escape :
+                        checkMode = 0;
+                }
+        }
     }
+}
+
+void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
+    window.draw(title);
+    window.draw(button1);
+    window.draw(button2);
+}
+
+void windowGame() {
+
 }
 
 
@@ -111,7 +145,7 @@ int main() {
         Event ev;
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
-            modeGame();
+            modeGame(window, ev);
         }
 
         window.clear();
@@ -120,6 +154,9 @@ int main() {
         switch (checkMode) {
             case 0 :
                 windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
+                break;
+            case 1 :
+                windowGame();
                 break;
         }
 
