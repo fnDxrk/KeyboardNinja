@@ -3,6 +3,8 @@
 
 using namespace sf;
 
+int checkMode = 0;
+
 void initTextMenu(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
     text.setFont(font);             //Шрифт
     text.setStyle(Text::Bold);      //Толщина шрифта
@@ -14,6 +16,16 @@ void initTextMenu(Text& text, Font& font, int size, String str, float xPos, floa
 
     text.setPosition(xPos, yPos);   //Позиция текста
     text.setFillColor(textColor);   //Цвет текста
+
+}
+
+void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
+    window.draw(title);
+    window.draw(button1);
+    window.draw(button2);
+}
+
+void windowGame() {
 
 }
 
@@ -52,15 +64,16 @@ int main() {
             }
         }
         window.clear();
-        
         window.draw(background);
-        window.draw(title);
-        window.draw(buttonMenu[0]);
-        window.draw(buttonMenu[1]);
+
+        switch (checkMode) {
+            case 0 :
+                windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
+                break;
+        }
 
         window.display();
     }
-
 
     return 0;
 }
