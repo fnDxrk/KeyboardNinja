@@ -4,6 +4,7 @@
 using namespace sf;
 
 int checkMode = 0;
+int numberButton = 0;
 
 void initTextMenu(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
     text.setFont(font);             //Шрифт
@@ -25,9 +26,59 @@ void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2)
     window.draw(button2);
 }
 
+void MoveUp(Text button[], int& number) {
+    if (number - 1 >= -1) {
+        button[number].setFillColor(Color::White);
+        number--;
+        if (number == -1) 
+            number = 1;
+        button[number].setFillColor(Color::Red);
+    }
+}
+
+void MoveDown(Text button[], int& number) {
+    if (number + 1 >= 1) {
+        button[number].setFillColor(Color::White);
+        number++;
+        if (number == 2) 
+            number = 0;
+        button[number].setFillColor(Color::Red);
+    }
+}
+
 void windowGame() {
 
 }
+
+void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
+    if (checkMode == 0) {
+        switch (ev.type) {
+            case Event::KeyPressed :
+                switch (ev.key.code) {
+                    case Keyboard::Escape :
+                        window.close();
+                    case Keyboard::Up :
+                        MoveUp(buttonMenu, numberButton);
+                        break;
+                    case Keyboard::Down :
+                        MoveDown(buttonMenu, numberButton);
+                        break;
+                    case Keyboard::Enter :
+                        if (numberButton == 0)
+                            checkMode = 1;
+                        else if (numberButton == 1) 
+                            window.close();
+                }
+        }
+    }
+}
+
+void modeGame() {
+    if (checkMode == 1) {
+
+    }
+}
+
 
 int main() {
     //Окно
@@ -52,17 +103,17 @@ int main() {
 
     //Кнопки
     Text buttonMenu[2];
-    initTextMenu(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::White);
+    initTextMenu(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::Red);
     initTextMenu(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
 
 
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
-            if (ev.type == Event::KeyPressed) {
-                if (ev.key.code == Keyboard::Escape) window.close();
-            }
+            modeMenu(window, ev, buttonMenu);
+            modeGame();
         }
+
         window.clear();
         window.draw(background);
 
