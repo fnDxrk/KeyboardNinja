@@ -3,8 +3,14 @@
 
 using namespace sf;
 
-int checkMode = 0;
-int numberButton = 0;
+int checkMode = 0;          //0 - Menu; 1 - Game
+int numberButton = 0;       //0 - Начать; 1 - Выйти
+
+//Пути для фона кнопок
+std::string logOutButtonFile = "Pictures/Button/logout.png";
+std::string refreshButtonFile = "Pictures/Button/refresh.png";
+std::string restartButtonFile = "Pictures/Button/restart.png";
+
 
 void initText(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
     text.setFont(font);             //Шрифт
@@ -20,19 +26,23 @@ void initText(Text& text, Font& font, int size, String str, float xPos, float yP
 
 }
 
-void initFrame(RectangleShape& board, Text& text) {
-    float xSize = text.getGlobalBounds().width + 100;
-    float ySize = text.getGlobalBounds().height + 90;
-
-    board.setSize(Vector2f(xSize, ySize));
-    board.setFillColor(Color(0, 0, 0, 0));
-    board.setOutlineThickness(5);
-    board.setOutlineColor(Color::White);
-    float xPos = text.getPosition().x - 50;
-    float yPos = text.getPosition().y - 35;
-    board.setPosition(xPos, yPos);
+void initFrame(RectangleShape& board, float xSize, float ySize, float xPos, float yPos) {
+    board.setSize(Vector2f(xSize, ySize));      //Размер рамки
+    board.setFillColor(Color(0, 0, 0, 0));      //Внутренняя часть рамки прозрачная
+    board.setOutlineThickness(2);               //Толщина рамки
+    board.setOutlineColor(Color::White);        //Цвет рамки
+    xPos = xPos - board.getSize().x / 2;
+    yPos = yPos - board.getSize().y / 2;
+    board.setPosition(xPos, yPos);              //Позиция рамки
 }
 
+void initButton(RectangleShape& button, float xPos, float yPos, Texture& t, std::string background) {
+    button.setSize(Vector2f(64, 64));
+    t.loadFromFile(background);
+    t.setSmooth(true);
+    button.setTexture(&t);
+    button.setPosition(xPos, yPos);
+}
 
 void MoveUp(Text button[], int& number) {
     if (number - 1 >= -1) {
@@ -118,28 +128,31 @@ void modeGame(RenderWindow &window, Event &ev, Text &text) {
 }
 
 void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
-    window.draw(title);
-    window.draw(button1);
-    window.draw(button2);
+    window.draw(title);     //Заголовок
+    window.draw(button1);   //Кнопка "Начать"
+    window.draw(button2);   //Кнопка "Выход"
 }
 
-void windowGame(RenderWindow& window, RectangleShape& boardText, Text& text, Text& titleGame1, Text& titleGame2, RectangleShape& refresh) {
+void windowGame(RenderWindow& window, RectangleShape& board, RectangleShape& boardText, Text& text, Text& titleGame1, Text& titleGame2, 
+                RectangleShape& logOutButton, RectangleShape& refreshButton) {
+    window.draw(board);
     window.draw(boardText);
-    window.draw(text);
+    //window.draw(text);
     window.draw(titleGame1);
     window.draw(titleGame2);
-    window.draw(refresh);
+    window.draw(logOutButton);
+    window.draw(refreshButton);
 }
 
 void splitText (std::string text, std::string *textChar) {
     int j = 0;
     for (int i = 0; i < text.length(); i++) {
         if (text[i] == '\n') {
-            i+= 1;
+            i += 1;
             textChar[j] = " ";
             j++;
         }
-        textChar [j] = text[i];
+        textChar[j] = text[i];
         j++;
     }
 }
@@ -150,49 +163,88 @@ int main() {
     window.create(VideoMode::getDesktopMode(), "KeyBoardNinja", Style::Fullscreen);
     window.setFramerateLimit(60);
 
-    //Фон
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Фон меню
     RectangleShape background(Vector2f(1920, 1080));
     Texture screen;
-    if (!screen.loadFromFile("Pictures/Background3.jpg")) return 1;
+    if (!screen.loadFromFile("Pictures/Background/3.jpg")) return 1;
     background.setTexture(&screen);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Шрифт
     Font font;
     if (!font.loadFromFile("Font/Raleway/static/Raleway-Thin.ttf")) return 2;
     //if (!font.loadFromFile("Font/Mont/mont_extralightdemo.ttf")) return 2;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     //Заголовок
     Text title;
     initText(title, font, 120, L"Keyboard Ninja", 960, 300, Color::White);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Кнопки
     Text buttonMenu[2];
     initText(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::Red);
     initText(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
 
+    RectangleShape logOutButton;    //Кнопка назад
+    Texture logOutTexture;
+    initButton(logOutButton, 25, 30, logOutTexture, logOutButtonFile);
+
+    RectangleShape refreshButton;   //Кнопка перезапуска
+    Texture refreshTexture;
+    initButton(refreshButton, 1835, 30, refreshTexture, refreshButtonFile);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     //Текст
     Text titleGame1;
+    String titleGame1Text = L"Начните печать";
+    initText(titleGame1, font, 80, titleGame1Text, 960, 880, Color::White);
+
     Text titleGame2;
+    String titleGame2Text = L"Отсчет времени начнется после ввода текста";
+    initText(titleGame2, font, 50, titleGame2Text, 960, 980, Color::White);
+
     Text text;
+
     std::string textB = "Here you can find activities to practise your reading skills.\nReading will help you to improve your understanding of\nthe language and build your vocabulary.";
     std::string textChar[textB.length()];
-    splitText(textB, textChar);
+
+    splitText(textB, textChar); //Делим наш текст на символы
     initText(text, font, 50, textB, 960, 500, Color::White);
-    initText(titleGame1, font, 100, L"Начните печать", 960, 150, Color::Yellow);
-    initText(titleGame2, font, 60, L"Отсчет времени начнется автоматически", 960, 250, Color::Yellow);
-    
-    //Рамка
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Рамки
+    RectangleShape board;
+    // board.setSize(Vector2f(1500, 640));
+    // board.setFillColor(Color(0, 0, 0, 0));
+    // board.setOutlineThickness(2);
+    // board.setOutlineColor(Color::White);
+    // float xpos = 960 - board.getSize().x / 2;
+    // float ypos = 460 - board.getSize().y / 2;
+    // board.setPosition(xpos, ypos);
+    initFrame(board, 1500, 640, 960, 450);
+
     RectangleShape boardText;
-    initFrame(boardText, text);
-
-    //Кнопки
-    RectangleShape refresh(Vector2f(80, 80));
-    Texture refreshT;
-    if (!refreshT.loadFromFile("Pictures/refresh-button.png")) return 1;
-    refreshT.setSmooth(true);
-    refresh.setTexture(&refreshT);
-    refresh.setPosition(1820, 20);
-
+    // boardText.setSize(Vector2f(1200, 640));
+    // boardText.setFillColor(Color(0, 0, 0, 0));
+    // boardText.setOutlineThickness(2);
+    // boardText.setOutlineColor(Color::White);
+    // float xpos1 = 810 - boardText.getSize().x / 2;
+    // float ypos1 = 460 - boardText.getSize().y / 2;
+    // boardText.setPosition(xpos1, ypos1);
+    // //initFrame(boardText, text);
+    initFrame(boardText, 1200, 640, 810, 450);
+    
+    //Формула для X : xPos - ((xSize - ySize) / 2)
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     while (window.isOpen()) {
         Event ev;
@@ -209,7 +261,7 @@ int main() {
                 windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
                 break;
             case 1 :
-                windowGame(window, boardText, text, titleGame1, titleGame2, refresh);
+                windowGame(window, board, boardText, text, titleGame1, titleGame2, logOutButton, refreshButton);
                 break;
         }
 
