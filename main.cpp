@@ -123,13 +123,26 @@ void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2)
     window.draw(button2);
 }
 
-void windowGame(RenderWindow& window, RectangleShape& boardText, Text& text, Text& titleGame1, Text& titleGame2) {
+void windowGame(RenderWindow& window, RectangleShape& boardText, Text& text, Text& titleGame1, Text& titleGame2, RectangleShape& refresh) {
     window.draw(boardText);
     window.draw(text);
     window.draw(titleGame1);
     window.draw(titleGame2);
+    window.draw(refresh);
 }
 
+void splitText (std::string text, std::string *textChar) {
+    int j = 0;
+    for (int i = 0; i < text.length(); i++) {
+        if (text[i] == '\n') {
+            i+= 1;
+            textChar[j] = " ";
+            j++;
+        }
+        textChar [j] = text[i];
+        j++;
+    }
+}
 
 int main() {
     //Окно
@@ -162,13 +175,23 @@ int main() {
     Text titleGame2;
     Text text;
     std::string textB = "Here you can find activities to practise your reading skills.\nReading will help you to improve your understanding of\nthe language and build your vocabulary.";
+    std::string textChar[textB.length()];
+    splitText(textB, textChar);
     initText(text, font, 50, textB, 960, 500, Color::White);
-    initText(titleGame1, font, 100, L"Начните печать", 960, 150, Color::White);
-    initText(titleGame2, font, 60, L"Отсчет времени начнется автоматически", 960, 250, Color::White);
+    initText(titleGame1, font, 100, L"Начните печать", 960, 150, Color::Yellow);
+    initText(titleGame2, font, 60, L"Отсчет времени начнется автоматически", 960, 250, Color::Yellow);
     
     //Рамка
     RectangleShape boardText;
     initFrame(boardText, text);
+
+    //Кнопки
+    RectangleShape refresh(Vector2f(80, 80));
+    Texture refreshT;
+    if (!refreshT.loadFromFile("Pictures/refresh-button.png")) return 1;
+    refreshT.setSmooth(true);
+    refresh.setTexture(&refreshT);
+    refresh.setPosition(1820, 20);
 
 
     while (window.isOpen()) {
@@ -186,7 +209,7 @@ int main() {
                 windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
                 break;
             case 1 :
-                windowGame(window, boardText, text, titleGame1, titleGame2);
+                windowGame(window, boardText, text, titleGame1, titleGame2, refresh);
                 break;
         }
 
