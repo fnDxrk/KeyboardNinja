@@ -6,7 +6,7 @@ using namespace sf;
 int checkMode = 0;
 int numberButton = 0;
 
-void initTextMenu(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
+void initText(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
     text.setFont(font);             //Шрифт
     text.setStyle(Text::Bold);      //Толщина шрифта
     text.setCharacterSize(size);    //Размер шрифта
@@ -19,6 +19,20 @@ void initTextMenu(Text& text, Font& font, int size, String str, float xPos, floa
     text.setFillColor(textColor);   //Цвет текста
 
 }
+
+void initFrame(RectangleShape& board, Text& text) {
+    float xSize = text.getGlobalBounds().width + 100;
+    float ySize = text.getGlobalBounds().height + 90;
+
+    board.setSize(Vector2f(xSize, ySize));
+    board.setFillColor(Color(0, 0, 0, 0));
+    board.setOutlineThickness(5);
+    board.setOutlineColor(Color::White);
+    float xPos = text.getPosition().x - 50;
+    float yPos = text.getPosition().y - 35;
+    board.setPosition(xPos, yPos);
+}
+
 
 void MoveUp(Text button[], int& number) {
     if (number - 1 >= -1) {
@@ -91,7 +105,7 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev) {
+void modeGame(RenderWindow &window, Event &ev, Text &text) {
     if (checkMode == 1) {
         switch (ev.type) {
             case Event::KeyPressed :
@@ -109,8 +123,11 @@ void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2)
     window.draw(button2);
 }
 
-void windowGame() {
-
+void windowGame(RenderWindow& window, RectangleShape& boardText, Text& text, Text& titleGame1, Text& titleGame2) {
+    window.draw(boardText);
+    window.draw(text);
+    window.draw(titleGame1);
+    window.draw(titleGame2);
 }
 
 
@@ -133,19 +150,32 @@ int main() {
 
     //Заголовок
     Text title;
-    initTextMenu(title, font, 120, L"Keyboard Ninja", 960, 300, Color::White);
+    initText(title, font, 120, L"Keyboard Ninja", 960, 300, Color::White);
 
     //Кнопки
     Text buttonMenu[2];
-    initTextMenu(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::Red);
-    initTextMenu(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
+    initText(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::Red);
+    initText(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
+
+    //Текст
+    Text titleGame1;
+    Text titleGame2;
+    Text text;
+    std::string textB = "Here you can find activities to practise your reading skills.\nReading will help you to improve your understanding of\nthe language and build your vocabulary.";
+    initText(text, font, 50, textB, 960, 500, Color::White);
+    initText(titleGame1, font, 100, L"Начните печать", 960, 150, Color::White);
+    initText(titleGame2, font, 60, L"Отсчет времени начнется автоматически", 960, 250, Color::White);
+    
+    //Рамка
+    RectangleShape boardText;
+    initFrame(boardText, text);
 
 
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
-            modeGame(window, ev);
+            modeGame(window, ev, titleGame1);
         }
 
         window.clear();
@@ -156,7 +186,7 @@ int main() {
                 windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
                 break;
             case 1 :
-                windowGame();
+                windowGame(window, boardText, text, titleGame1, titleGame2);
                 break;
         }
 
