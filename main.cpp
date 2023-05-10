@@ -90,6 +90,28 @@ void buttonExitCondition(Text buttonMenu[], RenderWindow& window) {
     }
 }
 
+void buttonBack(RectangleShape logOutButton, RenderWindow& window) {
+    if (Mouse::getPosition().x >= 25 &&
+        Mouse::getPosition().y >= 30  &&
+        Mouse::getPosition().x <= 25 + logOutButton.getSize().x &&
+        Mouse::getPosition().y <= 30 + logOutButton.getSize().y) {
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            checkMode = 0;
+        }
+    }
+}
+
+void buttonRefresh(RectangleShape refreshButton, RenderWindow& window) {
+    if (Mouse::getPosition().x >= 1835 &&
+        Mouse::getPosition().y >= 30  &&
+        Mouse::getPosition().x <= 1835 + refreshButton.getSize().x &&
+        Mouse::getPosition().y <= 30 + refreshButton.getSize().y) {
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            // Изменение текста
+        }
+    }
+}
+
 void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     if (checkMode == 0) {
         buttonStartCondition(buttonMenu);
@@ -115,8 +137,10 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev, Text &text) {
+void modeGame(RenderWindow &window, Event &ev, Text &text, RectangleShape logOutButton, RectangleShape refreshButton) {
     if (checkMode == 1) {
+        buttonBack(logOutButton, window);
+        buttonRefresh(refreshButton, window);
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
@@ -133,10 +157,9 @@ void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2)
     window.draw(button2);   //Кнопка "Выход"
 }
 
-void windowGame(RenderWindow& window, RectangleShape& board, RectangleShape& boardText, Text& text, Text& titleGame1, Text& titleGame2, 
+void windowGame(RenderWindow& window, RectangleShape& board, Text& text, Text& titleGame1, Text& titleGame2, 
                 RectangleShape& logOutButton, RectangleShape& refreshButton) {
     window.draw(board);
-    window.draw(boardText);
     //window.draw(text);
     window.draw(titleGame1);
     window.draw(titleGame2);
@@ -231,18 +254,6 @@ int main() {
     // board.setPosition(xpos, ypos);
     initFrame(board, 1500, 640, 960, 450);
 
-    RectangleShape boardText;
-    // boardText.setSize(Vector2f(1200, 640));
-    // boardText.setFillColor(Color(0, 0, 0, 0));
-    // boardText.setOutlineThickness(2);
-    // boardText.setOutlineColor(Color::White);
-    // float xpos1 = 810 - boardText.getSize().x / 2;
-    // float ypos1 = 460 - boardText.getSize().y / 2;
-    // boardText.setPosition(xpos1, ypos1);
-    // //initFrame(boardText, text);
-    initFrame(boardText, 1200, 640, 810, 450);
-    
-    //Формула для X : xPos - ((xSize - ySize) / 2)
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -250,7 +261,7 @@ int main() {
         Event ev;
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
-            modeGame(window, ev, titleGame1);
+            modeGame(window, ev, titleGame1, logOutButton, refreshButton);
         }
 
         window.clear();
@@ -261,7 +272,7 @@ int main() {
                 windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
                 break;
             case 1 :
-                windowGame(window, board, boardText, text, titleGame1, titleGame2, logOutButton, refreshButton);
+                windowGame(window, board, text, titleGame1, titleGame2, logOutButton, refreshButton);
                 break;
         }
 
