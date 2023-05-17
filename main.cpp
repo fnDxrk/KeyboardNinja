@@ -3,8 +3,9 @@
 
 using namespace sf;
 
-int checkMode = 0;          //0 - Menu; 1 - Game
+int checkMode = 0;          //0 - Menu; 1 - Difficult; 2 - Game
 int numberButton = 0;       //0 - Начать; 1 - Выйти
+int numberDifficult = 0;    //0 - easy; 1 - normal; 2 - hard
 
 //Пути для фона кнопок
 std::string logOutButtonFile = "Pictures/Button/logout.png";
@@ -64,6 +65,26 @@ void MoveDown(Text button[], int& number) {
     }
 }
 
+void MoveUpDifficult(Text button[], int& number) {
+    if (number - 1 >= -1) {
+        button[number].setFillColor(Color::White);
+        number--;
+        if (number == -1) 
+            number = 2;
+        button[number].setFillColor(Color::Red);
+    }
+}
+
+void MoveDownDifficult(Text button[], int& number) {
+    if (number + 1 >= 1) {
+        button[number].setFillColor(Color::White);
+        number++;
+        if (number == 3) 
+            number = 0;
+        button[number].setFillColor(Color::Red);
+    }
+}
+
 void buttonStartCondition(Text buttonMenu[]) {
     if (Mouse::getPosition().x >= 960 - 5 - buttonMenu[0].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y >= 700 - buttonMenu[0].getGlobalBounds().height / 2 &&
@@ -89,6 +110,44 @@ void buttonExitCondition(Text buttonMenu[], RenderWindow& window) {
         }
     }
 }
+
+// void buttonEasyCondition(Text buttonDifficult[]) {
+//     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[0].getGlobalBounds().width / 2 &&
+//         Mouse::getPosition().y >= 440 - buttonDifficult[0].getGlobalBounds().height / 2 &&
+//         Mouse::getPosition().x <= 960 + buttonDifficult[0].getGlobalBounds().width / 2 &&
+//         Mouse::getPosition().y <= 440 + buttonDifficult[0].getGlobalBounds().height / 2) {
+//         buttonDifficult[0].setFillColor(Color::Red);
+//         buttonDifficult[1].setFillColor(Color::White);
+//         buttonDifficult[2].setFillColor(Color::White);
+//         if (Mouse::isButtonPressed(Mouse::Left)) {
+//         }
+//     }
+// }
+
+// void buttonNormalCondition(Text buttonDifficult[]) {
+//     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[1].getGlobalBounds().width / 2 &&
+//         Mouse::getPosition().y >= 540 - buttonDifficult[1].getGlobalBounds().height / 2 &&
+//         Mouse::getPosition().x <= 960 + buttonDifficult[1].getGlobalBounds().width / 2 &&
+//         Mouse::getPosition().y <= 540 + buttonDifficult[1].getGlobalBounds().height / 2) {
+//         buttonDifficult[1].setFillColor(Color::Red);
+//         buttonDifficult[0].setFillColor(Color::White);
+//         buttonDifficult[2].setFillColor(Color::White);
+//         if (Mouse::isButtonPressed(Mouse::Left)) {
+//         }
+//     }
+// }
+// void buttonHardCondition(Text buttonDifficult[]) {
+//     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[2].getGlobalBounds().width / 2 &&
+//         Mouse::getPosition().y >= 630 - buttonDifficult[2].getGlobalBounds().height / 2 &&
+//         Mouse::getPosition().x <= 960 + buttonDifficult[2].getGlobalBounds().width / 2 &&
+//         Mouse::getPosition().y <= 630 + buttonDifficult[2].getGlobalBounds().height / 2) {
+//         buttonDifficult[2].setFillColor(Color::Red);
+//         buttonDifficult[1].setFillColor(Color::White);
+//         buttonDifficult[0].setFillColor(Color::White);
+//         if (Mouse::isButtonPressed(Mouse::Left)) {
+//         }
+//     }
+// }
 
 void buttonBack(RectangleShape logOutButton, RenderWindow& window) {
     if (Mouse::getPosition().x >= 25 &&
@@ -128,8 +187,10 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
                         MoveDown(buttonMenu, numberButton);
                         break;
                     case Keyboard::Enter :
-                        if (numberButton == 0)
+                        if (numberButton == 0) {
                             checkMode = 1;
+                            break;
+                        }
                         else if (numberButton == 1) 
                             window.close();
                 }
@@ -137,19 +198,49 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev, Text &text, RectangleShape logOutButton, RectangleShape refreshButton) {
+void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], RectangleShape logOutButton) {
     if (checkMode == 1) {
         buttonBack(logOutButton, window);
-        buttonRefresh(refreshButton, window);
+        // buttonEasyCondition(buttonDifficult);
+        // buttonNormalCondition(buttonDifficult);
+        // buttonHardCondition(buttonDifficult);
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
                     case Keyboard::Escape :
                         checkMode = 0;
+                    case Keyboard::Up :
+                        MoveUpDifficult(buttonDifficult, numberDifficult);
+                        break;
+                    case Keyboard::Down :
+                        MoveDownDifficult(buttonDifficult, numberDifficult);
+                        break;
+                    case Keyboard::Enter :
+                        if (numberDifficult == 0)
+                            checkMode = 1;
+                        else if (numberDifficult == 1) 
+                            window.close();
                 }
         }
     }
 }
+
+void modeGame(RenderWindow &window, Event &ev, Text &text, RectangleShape logOutButton, RectangleShape refreshButton) {
+    if (checkMode == 2) {
+        buttonBack(logOutButton, window);
+        buttonRefresh(refreshButton, window); 
+        switch (ev.type) {
+            case Event::KeyPressed :
+
+                switch (ev.key.code) {
+
+                    case Keyboard::Escape :
+                        checkMode = 1;
+                }
+        }
+    }
+}
+
 
 void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
     window.draw(title);     //Заголовок
@@ -157,10 +248,17 @@ void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2)
     window.draw(button2);   //Кнопка "Выход"
 }
 
+void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& button1, Text& button2, Text& button3) {
+    window.draw(logOutButton);
+    window.draw(button1);   //Кнопка "Легко"
+    window.draw(button2);   //Кнопка "Нормально"
+    window.draw(button3);   //Кнопка "Сложно"
+}
+
 void windowGame(RenderWindow& window, RectangleShape& board, Text& text, Text& titleGame1, Text& titleGame2, 
                 RectangleShape& logOutButton, RectangleShape& refreshButton) {
     window.draw(board);
-    //window.draw(text);
+    window.draw(text);
     window.draw(titleGame1);
     window.draw(titleGame2);
     window.draw(logOutButton);
@@ -214,6 +312,11 @@ int main() {
     initText(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::Red);
     initText(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
 
+    Text buttonDifficult[3];
+    initText(buttonDifficult[0], font, 70, L"Лекго", 960, 440, Color::Red);
+    initText(buttonDifficult[1], font, 70, L"Нормально", 960, 540, Color::White);
+    initText(buttonDifficult[2], font, 70, L"Сложно", 960, 630, Color::White);
+
     RectangleShape logOutButton;    //Кнопка назад
     Texture logOutTexture;
     initButton(logOutButton, 25, 30, logOutTexture, logOutButtonFile);
@@ -237,6 +340,7 @@ int main() {
 
     std::string textB = "Here you can find activities to practise your reading skills.\nReading will help you to improve your understanding of\nthe language and build your vocabulary.";
     std::string textChar[textB.length()];
+    std::string inputSymbol;
 
     splitText(textB, textChar); //Делим наш текст на символы
     initText(text, font, 50, textB, 960, 500, Color::White);
@@ -261,6 +365,7 @@ int main() {
         Event ev;
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
+            modeDifficult(window, ev, buttonDifficult, logOutButton);
             modeGame(window, ev, titleGame1, logOutButton, refreshButton);
         }
 
@@ -272,6 +377,9 @@ int main() {
                 windowMenu(window, title, buttonMenu[0], buttonMenu[1]);
                 break;
             case 1 :
+                windowDifficult(window, logOutButton, buttonDifficult[0], buttonDifficult[1], buttonDifficult[2]);
+                break;
+            case 2 :
                 windowGame(window, board, text, titleGame1, titleGame2, logOutButton, refreshButton);
                 break;
         }
