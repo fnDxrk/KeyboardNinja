@@ -90,6 +90,7 @@ void buttonStartCondition(Text buttonMenu[]) {
         Mouse::getPosition().y >= 700 - buttonMenu[0].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonMenu[0].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y <= 700 + buttonMenu[0].getGlobalBounds().height / 2) {
+        numberButton = 0;
         buttonMenu[0].setFillColor(Color::Red);
         buttonMenu[1].setFillColor(Color::White);
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -103,6 +104,7 @@ void buttonExitCondition(Text buttonMenu[], RenderWindow& window) {
         Mouse::getPosition().y >= 800 - buttonMenu[1].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonMenu[1].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y <= 800 + buttonMenu[1].getGlobalBounds().height / 2) {
+        numberButton = 1;
         buttonMenu[1].setFillColor(Color::Red);
         buttonMenu[0].setFillColor(Color::White);
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -111,43 +113,49 @@ void buttonExitCondition(Text buttonMenu[], RenderWindow& window) {
     }
 }
 
-// void buttonEasyCondition(Text buttonDifficult[]) {
-//     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[0].getGlobalBounds().width / 2 &&
-//         Mouse::getPosition().y >= 440 - buttonDifficult[0].getGlobalBounds().height / 2 &&
-//         Mouse::getPosition().x <= 960 + buttonDifficult[0].getGlobalBounds().width / 2 &&
-//         Mouse::getPosition().y <= 440 + buttonDifficult[0].getGlobalBounds().height / 2) {
-//         buttonDifficult[0].setFillColor(Color::Red);
-//         buttonDifficult[1].setFillColor(Color::White);
-//         buttonDifficult[2].setFillColor(Color::White);
-//         if (Mouse::isButtonPressed(Mouse::Left)) {
-//         }
-//     }
-// }
+void buttonEasyCondition(Text buttonDifficult[]) {
+    if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[0].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y >= 440 - buttonDifficult[0].getGlobalBounds().height / 2 &&
+        Mouse::getPosition().x <= 960 + buttonDifficult[0].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y <= 440 + buttonDifficult[0].getGlobalBounds().height / 2) {
+        numberDifficult = 0;
+        buttonDifficult[0].setFillColor(Color::Red);
+        buttonDifficult[1].setFillColor(Color::White);
+        buttonDifficult[2].setFillColor(Color::White);
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            checkMode = 2;
+        }
+    }
+}
 
-// void buttonNormalCondition(Text buttonDifficult[]) {
-//     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[1].getGlobalBounds().width / 2 &&
-//         Mouse::getPosition().y >= 540 - buttonDifficult[1].getGlobalBounds().height / 2 &&
-//         Mouse::getPosition().x <= 960 + buttonDifficult[1].getGlobalBounds().width / 2 &&
-//         Mouse::getPosition().y <= 540 + buttonDifficult[1].getGlobalBounds().height / 2) {
-//         buttonDifficult[1].setFillColor(Color::Red);
-//         buttonDifficult[0].setFillColor(Color::White);
-//         buttonDifficult[2].setFillColor(Color::White);
-//         if (Mouse::isButtonPressed(Mouse::Left)) {
-//         }
-//     }
-// }
-// void buttonHardCondition(Text buttonDifficult[]) {
-//     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[2].getGlobalBounds().width / 2 &&
-//         Mouse::getPosition().y >= 630 - buttonDifficult[2].getGlobalBounds().height / 2 &&
-//         Mouse::getPosition().x <= 960 + buttonDifficult[2].getGlobalBounds().width / 2 &&
-//         Mouse::getPosition().y <= 630 + buttonDifficult[2].getGlobalBounds().height / 2) {
-//         buttonDifficult[2].setFillColor(Color::Red);
-//         buttonDifficult[1].setFillColor(Color::White);
-//         buttonDifficult[0].setFillColor(Color::White);
-//         if (Mouse::isButtonPressed(Mouse::Left)) {
-//         }
-//     }
-// }
+void buttonNormalCondition(Text buttonDifficult[]) {
+    if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[1].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y >= 540 - buttonDifficult[1].getGlobalBounds().height / 2 &&
+        Mouse::getPosition().x <= 960 + buttonDifficult[1].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y <= 540 + buttonDifficult[1].getGlobalBounds().height / 2) {
+        numberDifficult = 1;
+        buttonDifficult[1].setFillColor(Color::Red);
+        buttonDifficult[0].setFillColor(Color::White);
+        buttonDifficult[2].setFillColor(Color::White);
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            checkMode = 2;
+        }
+    }
+}
+void buttonHardCondition(Text buttonDifficult[]) {
+    if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[2].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y >= 630 - buttonDifficult[2].getGlobalBounds().height / 2 &&
+        Mouse::getPosition().x <= 960 + buttonDifficult[2].getGlobalBounds().width / 2 &&
+        Mouse::getPosition().y <= 630 + buttonDifficult[2].getGlobalBounds().height / 2) {
+        numberDifficult = 2;
+        buttonDifficult[2].setFillColor(Color::Red);
+        buttonDifficult[1].setFillColor(Color::White);
+        buttonDifficult[0].setFillColor(Color::White);
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            checkMode = 2;
+        }
+    }
+}
 
 void buttonBack(RectangleShape logOutButton, RenderWindow& window) {
     if (Mouse::getPosition().x >= 25 &&
@@ -189,7 +197,7 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
                     case Keyboard::Enter :
                         if (numberButton == 0) {
                             checkMode = 1;
-                            break;
+                            ev.key.code = Keyboard::Unknown;
                         }
                         else if (numberButton == 1) 
                             window.close();
@@ -201,14 +209,16 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
 void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], RectangleShape logOutButton) {
     if (checkMode == 1) {
         buttonBack(logOutButton, window);
-        // buttonEasyCondition(buttonDifficult);
-        // buttonNormalCondition(buttonDifficult);
-        // buttonHardCondition(buttonDifficult);
+        buttonEasyCondition(buttonDifficult);
+        buttonNormalCondition(buttonDifficult);
+        buttonHardCondition(buttonDifficult);
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
                     case Keyboard::Escape :
                         checkMode = 0;
+                        numberDifficult = 0;
+                        break;
                     case Keyboard::Up :
                         MoveUpDifficult(buttonDifficult, numberDifficult);
                         break;
@@ -216,24 +226,25 @@ void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], Rec
                         MoveDownDifficult(buttonDifficult, numberDifficult);
                         break;
                     case Keyboard::Enter :
-                        if (numberDifficult == 0)
-                            checkMode = 1;
-                        else if (numberDifficult == 1) 
-                            window.close();
+                        checkMode = 2;
                 }
         }
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev, Text &text, RectangleShape logOutButton, RectangleShape refreshButton) {
+void modeGame(RenderWindow &window, Event &ev, Text &text, RectangleShape logOutButton, RectangleShape refreshButton, Font& font, Text &titleGame1, String* titleGame1Text, Text &titleGame2) {
     if (checkMode == 2) {
         buttonBack(logOutButton, window);
         buttonRefresh(refreshButton, window); 
+        initText(titleGame1, font, 80, titleGame1Text[numberDifficult], 960, 880, Color::White);
         switch (ev.type) {
             case Event::KeyPressed :
 
                 switch (ev.key.code) {
-
+                    case Keyboard::Space : 
+                        // Сделать отсчет времени. Пока что написал, чтобы был вид
+                        initText(titleGame2, font, 50, L"Время: ", 960, 980, Color::White);
+                        break;
                     case Keyboard::Escape :
                         checkMode = 1;
                 }
@@ -258,7 +269,6 @@ void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& 
 void windowGame(RenderWindow& window, RectangleShape& board, Text& text, Text& titleGame1, Text& titleGame2, 
                 RectangleShape& logOutButton, RectangleShape& refreshButton) {
     window.draw(board);
-    window.draw(text);
     window.draw(titleGame1);
     window.draw(titleGame2);
     window.draw(logOutButton);
@@ -313,7 +323,7 @@ int main() {
     initText(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
 
     Text buttonDifficult[3];
-    initText(buttonDifficult[0], font, 70, L"Лекго", 960, 440, Color::Red);
+    initText(buttonDifficult[0], font, 70, L"Легко", 960, 440, Color::Red);
     initText(buttonDifficult[1], font, 70, L"Нормально", 960, 540, Color::White);
     initText(buttonDifficult[2], font, 70, L"Сложно", 960, 630, Color::White);
 
@@ -329,11 +339,10 @@ int main() {
 
     //Текст
     Text titleGame1;
-    String titleGame1Text = L"Начните печать";
-    initText(titleGame1, font, 80, titleGame1Text, 960, 880, Color::White);
+    String titleGame1Text[3] = {L"Уровень: Легкий", L"Уровень: Нормальный", L"Уровень: Сложный"};
 
     Text titleGame2;
-    String titleGame2Text = L"Отсчет времени начнется после ввода текста";
+    String titleGame2Text = L"Отсчет времени начнется после нажатия SPACE";
     initText(titleGame2, font, 50, titleGame2Text, 960, 980, Color::White);
 
     Text text;
@@ -356,7 +365,7 @@ int main() {
     // float xpos = 960 - board.getSize().x / 2;
     // float ypos = 460 - board.getSize().y / 2;
     // board.setPosition(xpos, ypos);
-    initFrame(board, 1500, 640, 960, 450);
+    initFrame(board, 1300, 640, 960, 450);
 
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,7 +375,7 @@ int main() {
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
             modeDifficult(window, ev, buttonDifficult, logOutButton);
-            modeGame(window, ev, titleGame1, logOutButton, refreshButton);
+            modeGame(window, ev, titleGame1, logOutButton, refreshButton, font, titleGame1, titleGame1Text, titleGame2);
         }
 
         window.clear();
