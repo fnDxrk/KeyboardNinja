@@ -9,12 +9,12 @@ int checkMode = 0;          //0 - Menu; 1 - Difficult; 2 - Game
 int numberButton = 0;       //0 - Start; 1 - Exit
 int numberDifficult = 0;    //0 - Easy; 1 - Normal; 2 - Hard
 int flagStart = 0;          //0 - !Start; 1 - Start
+bool t = false;
 
 //Пути для фона кнопок
 std::string logOutButtonFile = "Pictures/Button/logout.png";
 std::string refreshButtonFile = "Pictures/Button/refresh.png";
 std::string restartButtonFile = "Pictures/Button/restart.png";
-
 
 void initText(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
     text.setFont(font);             //Шрифт
@@ -183,21 +183,16 @@ void buttonRefresh(RectangleShape refreshButton, RenderWindow& window) {
     }
 }
 
-// void restartDifficult(Text& titleGame1, Text& titleGame2, Font& font, String titleGame1Text[]) {
-//     // titleGame2.setPosition(-100, -100);
-//     // initText(titleGame1, font, 80, titleGame1Text[numberDifficult], 960, 880, Color::White);
-// }
-void startTimer(int seconds) {
-    int timer = seconds;
-        std::string timeString = std::to_string(timer / 60) + " : " + std::to_string(timer % 60);
-        system("clear"); // Для Linux/Mac
-        std::cout << timeString << std::endl;
-        // Задержка на одну секунду
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        // Уменьшить таймер на одну секунду
-        timer--;
+void startTimer(Text &timeMessage, Clock& clock) {
+    int timer = clock.getElapsedTime().asSeconds();
+    String timerStr = L"Время : " + std::to_string(25 - timer) + L" сек";
+    float xPos = 980 - 10 - timeMessage.getGlobalBounds().width / 2;    //Выравнивание по X
+    float yPos = 1020 - 20 - timeMessage.getGlobalBounds().height / 2;   //Выравнивание по Y
+    timeMessage.setString(timerStr);
+    timeMessage.setPosition(xPos, yPos);   //Позиция текста
+    
+    if (timer >= 25) checkMode = 0;
 }
-
 
 void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     if (checkMode == 0) {
@@ -252,23 +247,16 @@ void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], Rec
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev, Text &text, RectangleShape logOutButton, RectangleShape refreshButton, Font& font, Text &titleGame1, String* titleGame1Text, Text &titleGame2) {
+void modeGame(RenderWindow &window, Event &ev, RectangleShape logOutButton, RectangleShape refreshButton, Clock& clock) {
     if (checkMode == 2) {
         buttonBack(logOutButton, window);
         buttonRefresh(refreshButton, window); 
-        initText(titleGame1, font, 80, titleGame1Text[numberDifficult], 960, 920
-        , Color::White);
-        String titleGame2Text = L"Отсчет времени начнется после нажатия SPACE";
-        if (flagStart != 1) {
-            initText(titleGame2, font, 50, titleGame2Text, 960, 1020, Color::White);
-        }
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
                     case Keyboard::Space : 
-                        // Сделать отсчет времени. Пока что написал, чтобы был вид
-                        initText(titleGame2, font, 60, L"Время : ", 890, 1020, Color::White);
                         flagStart = 1;
+                        clock.restart();
                         break;
                     case Keyboard::Escape :
                         checkMode = 1;
@@ -291,27 +279,18 @@ void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& 
     window.draw(button3);   //Кнопка "Сложно"
 }
 
-void windowGame(RenderWindow& window, RectangleShape& board, Text& text, Text& titleGame1, Text& titleGame2, 
-                RectangleShape& logOutButton, RectangleShape& refreshButton) {
+void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[], Text& noticeMessage, 
+                Text& timeMessage, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, int& timer) {
     window.draw(board);
-    window.draw(titleGame1);
-    window.draw(titleGame2);
+    window.draw(typeGamelvl[numberDifficult]);
+    if (flagStart != 1) window.draw(noticeMessage);
+    else if (flagStart == 1)  {
+        startTimer(timeMessage, clock);
+        window.draw(timeMessage);
+    }
     window.draw(logOutButton);
     window.draw(refreshButton);
 }
-
-// void splitText (std::string text, std::string *textChar) {
-//     int j = 0;
-//     for (int i = 0; i < text.length(); i++) {
-//         if (text[i] == '\n') {
-//             i += 1;
-//             textChar[j] = " ";
-//             j++;
-//         }
-//         textChar[j] = text[i];
-//         j++;
-//     }
-// }
 
 int main() {
     //Окно
@@ -363,43 +342,43 @@ int main() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Текст
-    Text titleGame1;
-    String titleGame1Text[3] = {L"Уровень : Легкий", L"Уровень : Нормальный", L"Уровень : Сложный"};
-
-    Text titleGame2;
-
-    Text time;
+    Text typeGamelvl[3];
+    initText(typeGamelvl[0], font, 80, L"Уровень : Легкий", 960, 920, Color::White);
+    initText(typeGamelvl[1], font, 80, L"Уровень : Нормальный", 960, 920, Color::White);
+    initText(typeGamelvl[2], font, 80, L"Уровень : Сложный", 960, 920, Color::White);
     
-    std::string timeStr;
-    // int scoreN = 0;
-    // std::string scoreS = std::to_string(scoreN);
+    Text noticeMessage;
+    String noticeMessage_str = L"Отсчет времени начнется после нажатия SPACE";
+    initText(noticeMessage, font, 50, noticeMessage_str, 960, 1020, Color::White);
 
-
-    Text text;
-
-    std::string textB = "Here you can find activities to practise your reading skills.\nReading will help you to improve your understanding of\nthe language and build your vocabulary.";
-    std::string textChar[textB.length()];
-    std::string inputSymbol;
-
-    //splitText(textB, textChar); //Делим наш текст на символы
-    initText(text, font, 50, textB, 960, 500, Color::White);
+    Text timeMessage;
+    timeMessage.setFont(font);
+    timeMessage.setStyle(Text::Bold);
+    timeMessage.setCharacterSize(60);
+    timeMessage.setFillColor(Color::White);    
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Рамки
     RectangleShape board;
 
-    initFrame(board, 1300, 640, 960, 450);
+    initFrame(board, 1300, 750, 960, 450);
 
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //Таймер
+
+    Clock clock;
+    int timer;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
             modeDifficult(window, ev, buttonDifficult, logOutButton);
-            modeGame(window, ev, titleGame1, logOutButton, refreshButton, font, titleGame1, titleGame1Text, titleGame2);
+            modeGame(window, ev, logOutButton, refreshButton, clock);
         }
 
         window.clear();
@@ -413,7 +392,7 @@ int main() {
                 windowDifficult(window, logOutButton, buttonDifficult[0], buttonDifficult[1], buttonDifficult[2]);
                 break;
             case 2 :
-                windowGame(window, board, text, titleGame1, titleGame2, logOutButton, refreshButton);
+                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer);
                 break;
         }
 
