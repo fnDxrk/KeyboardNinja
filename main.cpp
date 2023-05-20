@@ -1,7 +1,9 @@
 #include <iostream>
+#include <stdlib.h>
 #include <SFML/Graphics.hpp>
 #include <chrono>
 #include <thread>
+#include <time.h>
 
 using namespace sf;
 
@@ -10,6 +12,8 @@ int numberButton = 0;       //0 - Start; 1 - Exit
 int numberDifficult = 0;    //0 - Easy; 1 - Normal; 2 - Hard
 int flagStart = 0;          //0 - !Start; 1 - Start
 bool t = false;
+int numberLetter;
+std::string letters[26];         
 
 //Пути для фона кнопок
 std::string logOutButtonFile = "Pictures/Button/logout.png";
@@ -194,6 +198,16 @@ void startTimer(Text &timeMessage, Clock& clock) {
     if (timer >= 25) checkMode = 0;
 }
 
+void game (RenderWindow& window, RectangleShape& cube, float xPos, float yPos) {
+    srand(time(NULL));
+    
+    while (yPos < 775) {
+        yPos += 30;
+        cube.setPosition(xPos, yPos); 
+    }
+    window.draw(cube);
+}
+
 void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     if (checkMode == 0) {
         buttonStartCondition(buttonMenu);
@@ -261,6 +275,7 @@ void modeGame(RenderWindow &window, Event &ev, RectangleShape logOutButton, Rect
                     case Keyboard::Escape :
                         checkMode = 1;
                         flagStart = 0;
+                        break;
                 }
         }
     }
@@ -280,12 +295,14 @@ void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& 
 }
 
 void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[], Text& noticeMessage, 
-                Text& timeMessage, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, int& timer) {
+                Text& timeMessage, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, int& timer,
+                RectangleShape& cube, float xPos, float yPos) {
     window.draw(board);
     window.draw(typeGamelvl[numberDifficult]);
     if (flagStart != 1) window.draw(noticeMessage);
     else if (flagStart == 1)  {
         startTimer(timeMessage, clock);
+        game(window, cube, xPos, yPos);
         window.draw(timeMessage);
     }
     window.draw(logOutButton);
@@ -373,6 +390,25 @@ int main() {
     int timer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Кубик
+
+    RectangleShape cube;
+    float xSize = 50, ySize = 50;
+    float xPos = 935, yPos = 100;
+    initFrame(cube, xSize, ySize, xPos, yPos);
+
+
+
+    //Буквы
+
+    int z = 0;
+    for (int i = 'A'; i <= 'Z'; i++) {
+        letters[z] = i;
+        z++;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
@@ -392,7 +428,7 @@ int main() {
                 windowDifficult(window, logOutButton, buttonDifficult[0], buttonDifficult[1], buttonDifficult[2]);
                 break;
             case 2 :
-                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer);
+                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, xPos, yPos);
                 break;
         }
 
