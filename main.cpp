@@ -13,6 +13,9 @@ int numberDifficult = 0;    //0 - Easy; 1 - Normal; 2 - Hard
 int flagStart = 0;          //0 - !Start; 1 - Start
 int flagCorrect = 0;
 int numberLetter;
+int sumLetters = 0;
+int correctTypes = 0;
+int incorrectTypes = 0;
 std::string letters[26];         
 
 //Пути для фона кнопок
@@ -176,13 +179,18 @@ void buttonBack(RectangleShape logOutButton, RenderWindow& window) {
     }
 }
 
-void buttonRefresh(RectangleShape refreshButton, RenderWindow& window) {
+void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, RectangleShape& cube, Text& letter) {
     if (Mouse::getPosition().x >= 1835 &&
         Mouse::getPosition().y >= 30  &&
         Mouse::getPosition().x <= 1835 + refreshButton.getSize().x &&
         Mouse::getPosition().y <= 30 + refreshButton.getSize().y) {
         if (Mouse::isButtonPressed(Mouse::Left)) {
-            // Изменение текста
+            sumLetters = 0;
+            correctTypes = 0;
+            incorrectTypes = 0;            
+            flagStart = 0;
+            cube.setPosition(945, 110);
+            letter.setPosition(945 + 12, 110);
         }
     }
 }
@@ -199,7 +207,8 @@ void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& let
         clock.restart();
         cube.setPosition(945, 110);
         letter.setPosition(945 + 12, 110);
-        checkMode = 0;
+        checkMode = 3;
+        flagStart = 1;
     }
 }
 
@@ -280,6 +289,8 @@ void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter) {
             numberLetter = rand() % (25 + 1);
             letter.setString(letters[numberLetter]);
             letter.setPosition(xPos + 12, 75);
+            incorrectTypes++;
+            sumLetters++;
             flagCorrect = 0;
         }
     } else if (flagCorrect != 0) {
@@ -295,14 +306,19 @@ void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter) {
 
 void checkCorrect(Event& ev) {
     if (numberLetter == ev.key.code) {
+        correctTypes++;
         flagCorrect = 1;
+        sumLetters++;
+    } else {
+        incorrectTypes++;
+        sumLetters++;
     }
 }
 
 void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, RectangleShape& cube, Text& letter) {
     if (checkMode == 2) {
         buttonBack(logOutButton, window);
-        buttonRefresh(refreshButton, window); 
+        buttonRefresh(refreshButton, window, cube, letter); 
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
@@ -324,6 +340,20 @@ void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, Rec
     }
 }
 
+void modeResult(RenderWindow& window, Event& ev, RectangleShape& logOutButton) {
+    if (checkMode == 3) {
+        buttonBack(logOutButton, window);
+        switch (ev.type) {
+            case Event::KeyPressed :
+                switch (ev.key.code) {
+                    case Keyboard::Escape :
+                        checkMode = 0;
+                        break;
+                }
+        }
+    }
+}
+
 void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
     window.draw(title);     //Заголовок
     window.draw(button1);   //Кнопка "Начать"
@@ -331,6 +361,9 @@ void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2)
 }
 
 void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& button1, Text& button2, Text& button3) {
+    sumLetters = 0;
+    correctTypes = 0;
+    incorrectTypes = 0; 
     window.draw(logOutButton);
     window.draw(button1);   //Кнопка "Легко"
     window.draw(button2);   //Кнопка "Нормально"
@@ -350,6 +383,17 @@ void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[],
     }
     window.draw(logOutButton);
     window.draw(refreshButton);
+}
+
+void windowResult(RenderWindow& window, Font& font, Text& titleResult, Text& textSumLetters, Text& textCorrectTypes, Text& textIncorrectTypes, RectangleShape& logOutButton) {
+    initText(textSumLetters, font, 80, L"Количество букв : " + std::to_string(sumLetters), 960, 540, Color::White);
+    initText(textCorrectTypes, font, 80, L"Правильных нажатий : " + std::to_string(correctTypes), 960, 640, Color::White);
+    initText(textIncorrectTypes, font, 80, L"Неправильных нажатий : " + std::to_string(incorrectTypes), 960, 740, Color::White);
+    window.draw(titleResult);
+    window.draw(textSumLetters);
+    window.draw(textCorrectTypes);
+    window.draw(textIncorrectTypes);
+    window.draw(logOutButton);
 }
 
 int main() {
@@ -455,12 +499,24 @@ int main() {
     initText(letter, font, 40, "A", 935 + 10, 100 + 10, Color::White);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    //Результат
+
+    Text titleResult;
+    initText(titleResult, font, 120, L"Результат", 960, 300, Color::White);
+    Text textSumLetters;
+    Text textCorrectTypes;
+    Text textIncorrectTypes;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
             modeDifficult(window, ev, buttonDifficult, logOutButton);
             modeGame(window, ev, logOutButton, refreshButton, clock, cube, letter);
+            modeResult(window, ev, logOutButton);
         }
 
         window.clear();
@@ -475,6 +531,9 @@ int main() {
                 break;
             case 2 :
                 windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, letter);
+                break;
+            case 3:
+                windowResult(window, font, titleResult, textSumLetters, textCorrectTypes, textIncorrectTypes, logOutButton);
                 break;
         }
 
