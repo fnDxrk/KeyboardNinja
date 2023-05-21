@@ -12,6 +12,7 @@ int numberButton = 0;       //0 - Start; 1 - Exit
 int numberDifficult = 0;    //0 - Easy; 1 - Normal; 2 - Hard
 int flagStart = 0;          //0 - !Start; 1 - Start
 bool t = false;
+int flagCorrect = 0;
 int numberLetter;
 std::string letters[26];         
 
@@ -198,14 +199,34 @@ void startTimer(Text &timeMessage, Clock& clock) {
     if (timer >= 25) checkMode = 0;
 }
 
-void game (RenderWindow& window, RectangleShape& cube, float xPos, float yPos) {
+void game (RenderWindow& window, RectangleShape& cube, Text& letter, float xPos, float yPos) {
     srand(time(NULL));
-    
-    while (yPos < 775) {
-        yPos += 30;
-        cube.setPosition(xPos, yPos); 
-    }
+    if (flagCorrect == 0) {
+        if (cube.getPosition().y <= 775) {
+            cube.move(0.0f, 1.0f*9);
+            letter.move(0.0f, 1.0f*9);
+        } else if (cube.getPosition().y >= 775) {
+            cube.setPosition(910, 75);
+            numberLetter = rand() % (25 + 1);
+            letter.setString(letters[numberLetter]);
+            letter.setPosition(932 - letter.getGlobalBounds().width / 2, 100 - 10 - letter.getGlobalBounds().height / 2);
+            flagCorrect = 0;
+        }
+    } else if (flagCorrect != 0) {
+            cube.setPosition(910, 75);
+            numberLetter = rand() % (25 + 1);
+            letter.setString(letters[numberLetter]);
+            letter.setPosition(932 - letter.getGlobalBounds().width / 2, 100 - 10 - letter.getGlobalBounds().height / 2);
+            flagCorrect = 0;
+        }
+    window.draw(letter);
     window.draw(cube);
+}
+
+void checkCorrect (Event& ev) {
+    if (numberLetter == ev.key.code) {
+        flagCorrect = 1;
+    }
 }
 
 void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
@@ -276,6 +297,9 @@ void modeGame(RenderWindow &window, Event &ev, RectangleShape logOutButton, Rect
                         checkMode = 1;
                         flagStart = 0;
                         break;
+                    default :
+                        checkCorrect(ev);
+                        break;
                 }
         }
     }
@@ -296,13 +320,13 @@ void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& 
 
 void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[], Text& noticeMessage, 
                 Text& timeMessage, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, int& timer,
-                RectangleShape& cube, float xPos, float yPos) {
+                RectangleShape& cube, Text& letter, float xPos, float yPos) {
     window.draw(board);
     window.draw(typeGamelvl[numberDifficult]);
     if (flagStart != 1) window.draw(noticeMessage);
     else if (flagStart == 1)  {
         startTimer(timeMessage, clock);
-        game(window, cube, xPos, yPos);
+        game(window, cube, letter, xPos, yPos);
         window.draw(timeMessage);
     }
     window.draw(logOutButton);
@@ -398,7 +422,7 @@ int main() {
     float xPos = 935, yPos = 100;
     initFrame(cube, xSize, ySize, xPos, yPos);
 
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Буквы
 
@@ -407,6 +431,9 @@ int main() {
         letters[z] = i;
         z++;
     }
+
+    Text letter;
+    initText(letter, font, 40, "A", xPos + 10, yPos + 10, Color::White);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     while (window.isOpen()) {
@@ -428,7 +455,7 @@ int main() {
                 windowDifficult(window, logOutButton, buttonDifficult[0], buttonDifficult[1], buttonDifficult[2]);
                 break;
             case 2 :
-                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, xPos, yPos);
+                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, letter, xPos, yPos);
                 break;
         }
 
