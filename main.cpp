@@ -7,11 +7,10 @@
 
 using namespace sf;
 
-int checkMode = 0;          //0 - Menu; 1 - Difficult; 2 - Game
+int checkMode = 0;          //0 - Menu; 1 - Difficult; 2 - Game; 4 - Result
 int numberButton = 0;       //0 - Start; 1 - Exit
 int numberDifficult = 0;    //0 - Easy; 1 - Normal; 2 - Hard
 int flagStart = 0;          //0 - !Start; 1 - Start
-bool t = false;
 int flagCorrect = 0;
 int numberLetter;
 std::string letters[26];         
@@ -188,7 +187,7 @@ void buttonRefresh(RectangleShape refreshButton, RenderWindow& window) {
     }
 }
 
-void startTimer(Text &timeMessage, Clock& clock) {
+void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& letter) {
     int timer = clock.getElapsedTime().asSeconds();
     String timerStr = L"Время : " + std::to_string(25 - timer) + L" сек";
     float xPos = 980 - 10 - timeMessage.getGlobalBounds().width / 2;    //Выравнивание по X
@@ -196,36 +195,11 @@ void startTimer(Text &timeMessage, Clock& clock) {
     timeMessage.setString(timerStr);
     timeMessage.setPosition(xPos, yPos);   //Позиция текста
     
-    if (timer >= 25) checkMode = 0;
-}
-
-void game (RenderWindow& window, RectangleShape& cube, Text& letter, float xPos, float yPos) {
-    srand(time(NULL));
-    if (flagCorrect == 0) {
-        if (cube.getPosition().y <= 775) {
-            cube.move(0.0f, 1.0f*9);
-            letter.move(0.0f, 1.0f*9);
-        } else if (cube.getPosition().y >= 775) {
-            cube.setPosition(910, 75);
-            numberLetter = rand() % (25 + 1);
-            letter.setString(letters[numberLetter]);
-            letter.setPosition(932 - letter.getGlobalBounds().width / 2, 100 - 10 - letter.getGlobalBounds().height / 2);
-            flagCorrect = 0;
-        }
-    } else if (flagCorrect != 0) {
-            cube.setPosition(910, 75);
-            numberLetter = rand() % (25 + 1);
-            letter.setString(letters[numberLetter]);
-            letter.setPosition(932 - letter.getGlobalBounds().width / 2, 100 - 10 - letter.getGlobalBounds().height / 2);
-            flagCorrect = 0;
-        }
-    window.draw(letter);
-    window.draw(cube);
-}
-
-void checkCorrect (Event& ev) {
-    if (numberLetter == ev.key.code) {
-        flagCorrect = 1;
+    if (timer >= 25)  {
+        clock.restart();
+        cube.setPosition(945, 110);
+        letter.setPosition(945 + 12, 110);
+        checkMode = 0;
     }
 }
 
@@ -282,7 +256,50 @@ void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], Rec
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev, RectangleShape logOutButton, RectangleShape refreshButton, Clock& clock) {
+void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter) {
+    srand(time(NULL));
+    float speedFall = 0;
+    switch (numberDifficult) {
+        case 0:
+            speedFall = 4;
+            break;
+        case 1:
+            speedFall = 8;
+            break;
+        case 2:
+            speedFall = 12;
+            break;
+    }
+    float xPos = rand() % 1220 + 320;
+    if (flagCorrect == 0) {
+        if (cube.getPosition().y <= 768) {
+            cube.move(0, speedFall);
+            letter.move(0, speedFall);
+        } else if (cube.getPosition().y >= 768) {
+            cube.setPosition(xPos, 75);
+            numberLetter = rand() % (25 + 1);
+            letter.setString(letters[numberLetter]);
+            letter.setPosition(xPos + 12, 75);
+            flagCorrect = 0;
+        }
+    } else if (flagCorrect != 0) {
+            cube.setPosition(xPos, 75);
+            numberLetter = rand() % (25 + 1);
+            letter.setString(letters[numberLetter]);
+            letter.setPosition(xPos + 12, 75);
+            flagCorrect = 0;
+        }
+    window.draw(letter);
+    window.draw(cube);
+}
+
+void checkCorrect(Event& ev) {
+    if (numberLetter == ev.key.code) {
+        flagCorrect = 1;
+    }
+}
+
+void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, RectangleShape& cube, Text& letter) {
     if (checkMode == 2) {
         buttonBack(logOutButton, window);
         buttonRefresh(refreshButton, window); 
@@ -296,6 +313,8 @@ void modeGame(RenderWindow &window, Event &ev, RectangleShape logOutButton, Rect
                     case Keyboard::Escape :
                         checkMode = 1;
                         flagStart = 0;
+                        cube.setPosition(945, 110);
+                        letter.setPosition(945 + 12, 110);
                         break;
                     default :
                         checkCorrect(ev);
@@ -320,13 +339,13 @@ void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& 
 
 void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[], Text& noticeMessage, 
                 Text& timeMessage, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, int& timer,
-                RectangleShape& cube, Text& letter, float xPos, float yPos) {
+                RectangleShape& cube, Text& letter) {
     window.draw(board);
     window.draw(typeGamelvl[numberDifficult]);
     if (flagStart != 1) window.draw(noticeMessage);
     else if (flagStart == 1)  {
-        startTimer(timeMessage, clock);
-        game(window, cube, letter, xPos, yPos);
+        startTimer(timeMessage, clock, cube, letter);
+        gameKey(window, cube, letter);
         window.draw(timeMessage);
     }
     window.draw(logOutButton);
@@ -433,7 +452,7 @@ int main() {
     }
 
     Text letter;
-    initText(letter, font, 40, "A", xPos + 10, yPos + 10, Color::White);
+    initText(letter, font, 40, "A", 935 + 10, 100 + 10, Color::White);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     while (window.isOpen()) {
@@ -441,7 +460,7 @@ int main() {
         while (window.pollEvent(ev)) {
             modeMenu(window, ev, buttonMenu);
             modeDifficult(window, ev, buttonDifficult, logOutButton);
-            modeGame(window, ev, logOutButton, refreshButton, clock);
+            modeGame(window, ev, logOutButton, refreshButton, clock, cube, letter);
         }
 
         window.clear();
@@ -455,7 +474,7 @@ int main() {
                 windowDifficult(window, logOutButton, buttonDifficult[0], buttonDifficult[1], buttonDifficult[2]);
                 break;
             case 2 :
-                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, letter, xPos, yPos);
+                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, letter);
                 break;
         }
 
