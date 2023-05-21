@@ -208,7 +208,7 @@ void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& let
         cube.setPosition(945, 110);
         letter.setPosition(945 + 12, 110);
         checkMode = 3;
-        flagStart = 1;
+        flagStart = 0;
     }
 }
 
@@ -309,9 +309,6 @@ void checkCorrect(Event& ev) {
         correctTypes++;
         flagCorrect = 1;
         sumLetters++;
-    } else {
-        incorrectTypes++;
-        sumLetters++;
     }
 }
 
@@ -329,6 +326,9 @@ void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, Rec
                     case Keyboard::Escape :
                         checkMode = 1;
                         flagStart = 0;
+                        sumLetters = 0;
+                        correctTypes = 0;
+                        incorrectTypes = 0;
                         cube.setPosition(945, 110);
                         letter.setPosition(945 + 12, 110);
                         break;
@@ -347,6 +347,9 @@ void modeResult(RenderWindow& window, Event& ev, RectangleShape& logOutButton) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
                     case Keyboard::Escape :
+                        sumLetters = 0;
+                        correctTypes = 0;
+                        incorrectTypes = 0;
                         checkMode = 0;
                         break;
                 }
