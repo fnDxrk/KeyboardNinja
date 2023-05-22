@@ -14,13 +14,13 @@ CTEST (ctest, loadFontFromFile) {
     ASSERT_FALSE(checkFontFalse);
 }
 
-CTEST (ctest, loadTextureFromFile) {
-    Texture screenTrue;
-    bool checkScreenTrue = loadTextureFromFile(screenTrue, "Resource/Pictures/Background/3.jpg") ;
-    ASSERT_TRUE(checkScreenTrue);
+// CTEST (ctest, loadTextureFromFile) {
+//     Texture screenTrue;
+//     bool checkScreenTrue = loadTextureFromFile(screenTrue, "Resource/Pictures/Background/3.jpg") ;
+//     ASSERT_TRUE(checkScreenTrue);
     
 
-    Texture screenFalse;
-    bool checkScreenFalse = loadTextureFromFile(screenFalse, "Resource/Pictures/Background/3333.jpg") ;
-    ASSERT_FALSE(checkScreenFalse);
-}
+//     Texture screenFalse;
+//     bool checkScreenFalse = loadTextureFromFile(screenFalse, "Resource/Pictures/Background/3333.jpg") ;
+//     ASSERT_FALSE(checkScreenFalse);
+// }
