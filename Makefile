@@ -3,7 +3,7 @@ LIB_NAME = lib
 TEST_NAME = testmain
 
 TESTFLAGS = -I thirdparty
-CFLAGS = -lsfml-graphics -lsfml-system -lsfml-window -I src/lib
+CFLAGS = -lsfml-graphics -lsfml-system -lsfml-window -I src/lib -I SFML/include
 DEPSFLAGS = -MMD
 CC = g++
 
@@ -32,7 +32,7 @@ all: $(APP_PATH)
 -include $(DEPS)
 
 $(APP_PATH): $(APP_OBJECTS) $(LIB_PATH)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ -L SFML/lib
 
 $(LIB_PATH): $(LIB_OBJECTS)
 	ar rcs $@ $^
