@@ -4,13 +4,17 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: run
-      run: make run
+    - name: sfml package
+      run: sudo apt-get install -y libsfml-dev build-essential
 
-    - name: run tests
+    - name: Build
+      run: make
+
+    - name: Build tests
       run: make test
+

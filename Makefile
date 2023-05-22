@@ -3,7 +3,8 @@ LIB_NAME = lib
 TEST_NAME = testmain
 
 TESTFLAGS = -I thirdparty
-CFLAGS = -lsfml-graphics -lsfml-system -lsfml-window -I src/lib -I SFML/include
+SFML_FLAGS = -lsfml-graphics -lsfml-system -lsfml-window
+CFLAGS = -I src/lib
 DEPSFLAGS = -MMD
 CC = g++
 
@@ -32,7 +33,7 @@ all: $(APP_PATH)
 -include $(DEPS)
 
 $(APP_PATH): $(APP_OBJECTS) $(LIB_PATH)
-	$(CC) $(CFLAGS) -o $@ $^ -L SFML/lib
+	$(CC) $(CFLAGS) -o $@ $^ $(SFML_FLAGS)
 
 $(LIB_PATH): $(LIB_OBJECTS)
 	ar rcs $@ $^
@@ -44,7 +45,7 @@ test: $(LIB_PATH) $(TEST_PATH)
 	$(TEST_PATH)
 
 $(TEST_PATH): $(TEST_OBJECTS) $(LIB_PATH)
-	$(CC) $(TESTFLAGS) $(CFLAGS) -o $@ $^ 
+	$(CC) $(TESTFLAGS) $(CFLAGS) -o $@ $^ $(SFML_FLAGS)
 
 $(OBJ_DIR)/test/main.o: test/main.cpp
 	$(CC) $(TESTFLAGS) $(CFLAGS) $(DEPSFLAGS) -c -o $@ $<
@@ -52,8 +53,8 @@ $(OBJ_DIR)/test/main.o: test/main.cpp
 $(OBJ_DIR)/test/parser_test.o: test/parser_test.cpp
 	$(CC) $(TESTFLAGS) $(CFLAGS) $(DEPSFLAGS) -c -o $@ $<
 
-run : $(APP_PATH)
-	$(APP_PATH)
+run :
+ 	LD_LIBRARY_PATH=SFML/lib:${LD_LIBRARY_PATH} ./bin/main
 
 clean:
 	$(RM) $(APP_PATH) $(TEST_PATH) $(OBJ_DIR)/*/*/*.[aod] $(OBJ_DIR)/test/*.[aod]
