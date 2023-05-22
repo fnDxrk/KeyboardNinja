@@ -99,5 +99,8 @@ void checkCorrect(Event& ev) {
         flagCorrect = 1;
         sumLetters++;
     }
+    else {
+        sumLetters++;
+        incorrectTypes++;
+    }
 }
-

@@ -8,7 +8,7 @@ using namespace sf;
 
 void initText(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor);
 
-void initButton(RectangleShape& button, float xPos, float yPos, Texture& t, std::string background);
+void initButton(RectangleShape& button, float xPos, float yPos, Texture& t);
 
 void MoveUp(Text button[], int& number);
 

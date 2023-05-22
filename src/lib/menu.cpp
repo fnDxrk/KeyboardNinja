@@ -14,9 +14,8 @@ void initText(Text& text, Font& font, int size, String str, float xPos, float yP
 
 }
 
-void initButton(RectangleShape& button, float xPos, float yPos, Texture& t, std::string background) {
+void initButton(RectangleShape& button, float xPos, float yPos, Texture& t) {
     button.setSize(Vector2f(64, 64));
-    t.loadFromFile(background);
     t.setSmooth(true);
     button.setTexture(&t);
     button.setPosition(xPos, yPos);
