@@ -1,5 +1,5 @@
-#include "window.h"
-#include "menu.h"
+#include <window.h>
+#include <menu.h>
 
 void windowMenu(RenderWindow& window, Text& title, Text& button1, Text& button2) {
     window.draw(title);     //Заголовок
@@ -16,20 +16,22 @@ void windowDifficult (RenderWindow& window, RectangleShape& logOutButton, Text& 
 
 void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[], Text& noticeMessage, 
                 Text& timeMessage, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, int& timer,
-                RectangleShape& cube, Text& letter, std::string *letters) {
+                RectangleShape& cube, Text& letter, std::string *letters, int& flagStart, int& checkMode, int& numberDifficult, 
+                int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter) {
     window.draw(board);
     window.draw(typeGamelvl[numberDifficult]);
     if (flagStart != 1) window.draw(noticeMessage);
     else if (flagStart == 1)  {
-        startTimer(timeMessage, clock, cube, letter);
-        gameKey(window, cube, letter, letters);
+        startTimer(timeMessage, clock, cube, letter, checkMode, flagStart);
+        gameKey(window, cube, letter, letters, numberDifficult, flagCorrect, correctTypes, incorrectTypes, sumLetters, numberLetter);
         window.draw(timeMessage);
     }
     window.draw(logOutButton);
     window.draw(refreshButton);
 }
 
-void windowResult(RenderWindow& window, Font& font, Text& titleResult, Text& textSumLetters, Text& textCorrectTypes, Text& textIncorrectTypes, RectangleShape& logOutButton) {
+void windowResult(RenderWindow& window, Font& font, Text& titleResult, Text& textSumLetters, Text& textCorrectTypes, 
+                  Text& textIncorrectTypes, RectangleShape& logOutButton, int& sumLetters, int& correctTypes, int& incorrectTypes) {
     initText(textSumLetters, font, 80, L"Количество букв : " + std::to_string(sumLetters), 960, 540, Color::White);
     initText(textCorrectTypes, font, 80, L"Правильных нажатий : " + std::to_string(correctTypes), 960, 640, Color::White);
     initText(textIncorrectTypes, font, 80, L"Неправильных нажатий : " + std::to_string(incorrectTypes), 960, 740, Color::White);

@@ -6,18 +6,17 @@
 #include <iostream>
 #include <stdlib.h>
 #include <SFML/Graphics.hpp>
-#include "globals.h"
 
 using namespace sf;
 
 void initFrame(RectangleShape& board, float xSize, float ySize, float xPos, float yPos);
 
-void buttonBack(RectangleShape logOutButton, RenderWindow& window);
+void buttonBack(RectangleShape logOutButton, RenderWindow& window, int& checkMode);
 
-void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, RectangleShape& cube, Text& letter);
+void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, RectangleShape& cube, Text& letter, int& sumLetters, int& correctTypes, int& incorrectTypes, int& flagStart);
 
-void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& letter);
+void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& letter, int& checkMode, int& flagStart);
 
-void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters);
+void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters, int& numberDifficult, int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter);
 
-void checkCorrect(Event& ev);
+void checkCorrect(Event& ev, int& numberLetter, int& correctTypes, int& flagCorrect, int& sumLetters, int& incorrectTypes);

@@ -1,4 +1,4 @@
-#include "difficult.h"
+#include <difficult.h>
 
 void MoveUpDifficult(Text button[], int& number) {
     if (number - 1 >= -1) {
@@ -20,7 +20,7 @@ void MoveDownDifficult(Text button[], int& number) {
     }
 }
 
-void buttonEasyCondition(Text buttonDifficult[]) {
+void buttonEasyCondition(Text buttonDifficult[], int& numberDifficult, int& checkMode) {
     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[0].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y >= 440 - buttonDifficult[0].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonDifficult[0].getGlobalBounds().width / 2 &&
@@ -35,7 +35,7 @@ void buttonEasyCondition(Text buttonDifficult[]) {
     }
 }
 
-void buttonNormalCondition(Text buttonDifficult[]) {
+void buttonNormalCondition(Text buttonDifficult[], int& numberDifficult, int& checkMode) {
     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[1].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y >= 540 - buttonDifficult[1].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonDifficult[1].getGlobalBounds().width / 2 &&
@@ -50,7 +50,7 @@ void buttonNormalCondition(Text buttonDifficult[]) {
     }
 }
 
-void buttonHardCondition(Text buttonDifficult[]) {
+void buttonHardCondition(Text buttonDifficult[], int& numberDifficult, int& checkMode) {
     if (Mouse::getPosition().x >= 960 - 5 - buttonDifficult[2].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y >= 630 - buttonDifficult[2].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonDifficult[2].getGlobalBounds().width / 2 &&

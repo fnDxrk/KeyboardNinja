@@ -1,4 +1,4 @@
-#include "menu.h"
+#include <menu.h>
 
 void initText(Text& text, Font& font, int size, String str, float xPos, float yPos,  Color textColor) {
     text.setFont(font);             //Шрифт
@@ -41,7 +41,7 @@ void MoveDown(Text button[], int& number) {
     }
 }
 
-void buttonStartCondition(Text buttonMenu[]) {
+void buttonStartCondition(Text buttonMenu[], int& numberButton, int& checkMode) {
     if (Mouse::getPosition().x >= 960 - 5 - buttonMenu[0].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y >= 700 - buttonMenu[0].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonMenu[0].getGlobalBounds().width / 2 &&
@@ -55,7 +55,7 @@ void buttonStartCondition(Text buttonMenu[]) {
     }
 }
 
-void buttonExitCondition(Text buttonMenu[], RenderWindow& window) {
+void buttonExitCondition(Text buttonMenu[], RenderWindow& window, int& numberButton, int& checkMode) {
     if (Mouse::getPosition().x >= 960 - 5 - buttonMenu[1].getGlobalBounds().width / 2 &&
         Mouse::getPosition().y >= 800 - buttonMenu[1].getGlobalBounds().height / 2 &&
         Mouse::getPosition().x <= 960 + buttonMenu[1].getGlobalBounds().width / 2 &&

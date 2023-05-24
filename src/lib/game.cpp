@@ -1,4 +1,4 @@
-#include "game.h"
+#include <game.h>
 
 void initFrame(RectangleShape& board, float xSize, float ySize, float xPos, float yPos) {
     board.setSize(Vector2f(xSize, ySize));      //Размер рамки
@@ -10,7 +10,7 @@ void initFrame(RectangleShape& board, float xSize, float ySize, float xPos, floa
     board.setPosition(xPos, yPos);              //Позиция рамки
 }
 
-void buttonBack(RectangleShape logOutButton, RenderWindow& window) {
+void buttonBack(RectangleShape logOutButton, RenderWindow& window, int& checkMode) {
     if (Mouse::getPosition().x >= 25 &&
         Mouse::getPosition().y >= 30  &&
         Mouse::getPosition().x <= 25 + logOutButton.getSize().x &&
@@ -21,7 +21,7 @@ void buttonBack(RectangleShape logOutButton, RenderWindow& window) {
     }
 }
 
-void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, RectangleShape& cube, Text& letter) {
+void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, RectangleShape& cube, Text& letter, int& sumLetters, int& correctTypes, int& incorrectTypes, int& flagStart) {
     if (Mouse::getPosition().x >= 1835 &&
         Mouse::getPosition().y >= 30  &&
         Mouse::getPosition().x <= 1835 + refreshButton.getSize().x &&
@@ -37,7 +37,7 @@ void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, Rectangle
     }
 }
 
-void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& letter) {
+void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& letter, int& checkMode, int& flagStart) {
     int timer = clock.getElapsedTime().asSeconds();
     String timerStr = L"Время : " + std::to_string(25 - timer) + L" сек";
     float xPos = 980 - 10 - timeMessage.getGlobalBounds().width / 2;    //Выравнивание по X
@@ -54,7 +54,7 @@ void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& let
     }
 }
 
-void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters) {
+void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters, int& numberDifficult, int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter) {
     srand(time(NULL));
     float speedFall = 0;
     switch (numberDifficult) {
@@ -93,14 +93,10 @@ void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::stri
     window.draw(cube);
 }
 
-void checkCorrect(Event& ev) {
+void checkCorrect(Event& ev, int& numberLetter, int& correctTypes, int& flagCorrect, int& sumLetters, int& incorrectTypes) {
     if (numberLetter == ev.key.code) {
         correctTypes++;
         flagCorrect = 1;
         sumLetters++;
-    }
-    else {
-        sumLetters++;
-        incorrectTypes++;
     }
 }
