@@ -53,8 +53,8 @@ $(OBJ_DIR)/test/main.o: test/main.cpp
 $(OBJ_DIR)/test/parser_test.o: test/parser_test.cpp
 	$(CC) $(TESTFLAGS) $(CFLAGS) $(DEPSFLAGS) -c -o $@ $<
 
-run :
- 	LD_LIBRARY_PATH=SFML/lib:${LD_LIBRARY_PATH} ./bin/main
+run: $(APP_PATH)
+	./bin/main
 
 clean:
 	$(RM) $(APP_PATH) $(TEST_PATH) $(OBJ_DIR)/*/*/*.[aod] $(OBJ_DIR)/test/*.[aod]
