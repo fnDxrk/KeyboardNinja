@@ -54,39 +54,50 @@ void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& let
     }
 }
 
-void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters, int& numberDifficult, int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter) {
-    srand(time(NULL));
-    float speedFall = 0;
+bool selectDifficult(int& numberDifficult, float& speedFall) {
     switch (numberDifficult) {
         case 0:
             speedFall = 4;
+            return true;
             break;
         case 1:
             speedFall = 8;
+            return true;
             break;
         case 2:
             speedFall = 12;
+            return true;
+            break;
+        default:
+            return false;
             break;
     }
+}
+
+void startPositionCube(float& xPos, RectangleShape& cube, int& numberLetter, Text& letter, std::string *letters) {
+    cube.setPosition(xPos, 75);
+    numberLetter = rand() % (25 + 1);
+    letter.setString(letters[numberLetter]);
+    letter.setPosition(xPos + 12, 75);   
+}
+
+void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters, int& numberDifficult, int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter) {
+    srand(time(NULL));
+    float speedFall = 0;
+    selectDifficult(numberDifficult, speedFall);
     float xPos = rand() % 1220 + 320;
     if (flagCorrect == 0) {
         if (cube.getPosition().y <= 768) {
             cube.move(0, speedFall);
             letter.move(0, speedFall);
         } else if (cube.getPosition().y >= 768) {
-            cube.setPosition(xPos, 75);
-            numberLetter = rand() % (25 + 1);
-            letter.setString(letters[numberLetter]);
-            letter.setPosition(xPos + 12, 75);
+            startPositionCube(xPos, cube, numberLetter, letter, letters);
             incorrectTypes++;
             sumLetters++;
             flagCorrect = 0;
         }
     } else if (flagCorrect != 0) {
-            cube.setPosition(xPos, 75);
-            numberLetter = rand() % (25 + 1);
-            letter.setString(letters[numberLetter]);
-            letter.setPosition(xPos + 12, 75);
+            startPositionCube(xPos, cube, numberLetter, letter, letters);
             flagCorrect = 0;
         }
     window.draw(letter);

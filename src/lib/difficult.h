@@ -5,9 +5,9 @@
 
 using namespace sf;
 
-void MoveUpDifficult(Text button[], int& number);
+bool MoveUpDifficult(Text button[], int& number);
 
-void MoveDownDifficult(Text button[], int& number);
+bool MoveDownDifficult(Text button[], int& number);
 
 void buttonEasyCondition(Text buttonDifficult[], int& numberDifficult, int& checkMode);
 

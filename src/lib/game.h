@@ -17,6 +17,10 @@ void buttonRefresh(RectangleShape refreshButton, RenderWindow& window, Rectangle
 
 void startTimer(Text &timeMessage, Clock& clock, RectangleShape& cube, Text& letter, int& checkMode, int& flagStart);
 
+bool selectDifficult(int& numberDifficult, float& speedFall);
+
+void startPositionCube(float& xPos, RectangleShape& cube, int& numberLetter, Text& letter, std::string *letters);
+
 void gameKey(RenderWindow& window, RectangleShape& cube, Text& letter, std::string *letters, int& numberDifficult, int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter);
 
 void checkCorrect(Event& ev, int& numberLetter, int& correctTypes, int& flagCorrect, int& sumLetters, int& incorrectTypes);
