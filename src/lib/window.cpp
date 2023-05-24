@@ -20,7 +20,7 @@ void windowGame(RenderWindow& window, RectangleShape& board, Text typeGamelvl[],
                 int& flagCorrect, int& correctTypes, int& incorrectTypes, int& sumLetters, int& numberLetter) {
     window.draw(board);
     window.draw(typeGamelvl[numberDifficult]);
-    if (flagStart != 1) window.draw(noticeMessage);
+    if (flagStart == 0) window.draw(noticeMessage);
     else if (flagStart == 1)  {
         startTimer(timeMessage, clock, cube, letter, checkMode, flagStart);
         gameKey(window, cube, letter, letters, numberDifficult, flagCorrect, correctTypes, incorrectTypes, sumLetters, numberLetter);

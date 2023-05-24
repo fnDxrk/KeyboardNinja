@@ -21,24 +21,28 @@ void initButton(RectangleShape& button, float xPos, float yPos, Texture& t) {
     button.setPosition(xPos, yPos);
 }
 
-void MoveUp(Text button[], int& number) {
+bool MoveUp(Text button[], int& number) {
     if (number - 1 >= -1) {
         button[number].setFillColor(Color::White);
         number--;
         if (number == -1) 
             number = 1;
         button[number].setFillColor(Color::Red);
+        return true;
     }
+    else return false;
 }
 
-void MoveDown(Text button[], int& number) {
+bool MoveDown(Text button[], int& number) {
     if (number + 1 >= 1) {
         button[number].setFillColor(Color::White);
         number++;
         if (number == 2) 
             number = 0;
         button[number].setFillColor(Color::Red);
+        return true;
     }
+    else return false;
 }
 
 void buttonStartCondition(Text buttonMenu[], int& numberButton, int& checkMode) {

@@ -1,23 +1,27 @@
 #include <difficult.h>
 
-void MoveUpDifficult(Text button[], int& number) {
+bool MoveUpDifficult(Text button[], int& number) {
     if (number - 1 >= -1) {
         button[number].setFillColor(Color::White);
         number--;
         if (number == -1) 
             number = 2;
         button[number].setFillColor(Color::Red);
-    }
+        return true;
+    } 
+    else return false;
 }
 
-void MoveDownDifficult(Text button[], int& number) {
+bool MoveDownDifficult(Text button[], int& number) {
     if (number + 1 >= 1) {
         button[number].setFillColor(Color::White);
         number++;
         if (number == 3) 
             number = 0;
         button[number].setFillColor(Color::Red);
+        return true;
     }
+    else return false;
 }
 
 void buttonEasyCondition(Text buttonDifficult[], int& numberDifficult, int& checkMode) {
