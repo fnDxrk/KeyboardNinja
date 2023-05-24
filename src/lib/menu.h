@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "globals.h"
 
 using namespace sf;
 
@@ -14,6 +13,6 @@ void MoveUp(Text button[], int& number);
 
 void MoveDown(Text button[], int& number);
 
-void buttonStartCondition(Text buttonMenu[]);
+void buttonStartCondition(Text buttonMenu[], int& numberButton, int& checkMode);
 
-void buttonExitCondition(Text buttonMenu[], RenderWindow& window);
+void buttonExitCondition(Text buttonMenu[], RenderWindow& window, int& numberButton, int& checkMode);

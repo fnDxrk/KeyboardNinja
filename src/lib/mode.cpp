@@ -1,9 +1,9 @@
-#include "mode.h"
+#include <mode.h>
 
-void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
+void modeMenu(RenderWindow& window, Event &ev, Text buttonMenu[], int& numberButton, int& checkMode) {
     if (checkMode == 0) {
-        buttonStartCondition(buttonMenu);
-        buttonExitCondition(buttonMenu, window);
+        buttonStartCondition(buttonMenu, numberButton, checkMode);
+        buttonExitCondition(buttonMenu, window, numberButton, checkMode);
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
@@ -27,12 +27,16 @@ void modeMenu (RenderWindow& window, Event &ev, Text buttonMenu[]) {
     }
 }
 
-void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], RectangleShape logOutButton) {
+void modeDifficult(RenderWindow &window, Event &ev, Text buttonDifficult[], RectangleShape& logOutButton, 
+                   int& numberDifficult, int& checkMode, int& sumLetters, int& correctTypes, int& incorrectTypes) {
     if (checkMode == 1) {
-        buttonBack(logOutButton, window);
-        buttonEasyCondition(buttonDifficult);
-        buttonNormalCondition(buttonDifficult);
-        buttonHardCondition(buttonDifficult);
+        buttonBack(logOutButton, window, checkMode);
+        buttonEasyCondition(buttonDifficult, numberDifficult, checkMode);
+        buttonNormalCondition(buttonDifficult, numberDifficult, checkMode);
+        buttonHardCondition(buttonDifficult, numberDifficult, checkMode);
+        sumLetters = 0;
+        correctTypes = 0;
+        incorrectTypes = 0;
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
@@ -53,10 +57,12 @@ void modeDifficult (RenderWindow &window, Event &ev, Text buttonDifficult[], Rec
     }
 }
 
-void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, RectangleShape& refreshButton, Clock& clock, RectangleShape& cube, Text& letter) {
+void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, RectangleShape& refreshButton, 
+              Clock& clock, RectangleShape& cube, Text& letter, int& checkMode, int& flagStart, int& sumLetters, 
+              int& numberLetter, int& correctTypes, int&flagCorrect, int& incorrectTypes) {
     if (checkMode == 2) {
-        buttonBack(logOutButton, window);
-        buttonRefresh(refreshButton, window, cube, letter); 
+        buttonBack(logOutButton, window, checkMode);
+        buttonRefresh(refreshButton, window, cube, letter, sumLetters, correctTypes, incorrectTypes, flagStart); 
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {
@@ -74,16 +80,16 @@ void modeGame(RenderWindow &window, Event &ev, RectangleShape& logOutButton, Rec
                         letter.setPosition(945 + 12, 110);
                         break;
                     default :
-                        checkCorrect(ev);
+                        checkCorrect(ev, numberLetter, correctTypes, flagCorrect, sumLetters, incorrectTypes);
                         break;
                 }
         }
     }
 }
 
-void modeResult(RenderWindow& window, Event& ev, RectangleShape& logOutButton) {
+void modeResult(RenderWindow& window, Event& ev, RectangleShape& logOutButton, int& checkMode, int& sumLetters, int& correctTypes, int& incorrectTypes) {
     if (checkMode == 3) {
-        buttonBack(logOutButton, window);
+        buttonBack(logOutButton, window, checkMode);
         switch (ev.type) {
             case Event::KeyPressed :
                 switch (ev.key.code) {

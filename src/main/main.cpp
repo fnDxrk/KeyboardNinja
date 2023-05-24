@@ -3,7 +3,6 @@
 #include <difficult.h>
 #include <game.h>
 #include <menu.h>
-#include <globals.h>
 #include <mode.h>
 #include <window.h>
 #include <fileLoad.h>
@@ -45,10 +44,14 @@ int main() {
     initText(buttonMenu[0], font, 70, L"Начать", 960, 700, Color::Red);
     initText(buttonMenu[1], font, 70, L"Выйти", 960, 800, Color::White);
 
+    int numberButton = 0;       //0 - Start; 1 - Exit
+
     Text buttonDifficult[3];
     initText(buttonDifficult[0], font, 70, L"Легко", 960, 440, Color::Red);
     initText(buttonDifficult[1], font, 70, L"Нормально", 960, 540, Color::White);
     initText(buttonDifficult[2], font, 70, L"Сложно", 960, 630, Color::White);
+
+    int numberDifficult = 0;    //0 - Easy; 1 - Normal; 2 - Hard
 
     RectangleShape logOutButton;    //Кнопка назад
     Texture logOutTexture;
@@ -71,6 +74,7 @@ int main() {
     Text noticeMessage;
     String noticeMessage_str = L"Отсчет времени начнется после нажатия SPACE";
     initText(noticeMessage, font, 50, noticeMessage_str, 960, 1020, Color::White);
+    int flagStart = 0;          //0 - !Start; 1 - Start
 
     Text timeMessage;
     timeMessage.setFont(font);
@@ -117,6 +121,9 @@ int main() {
     Text letter;
     initText(letter, font, 40, "A", 935 + 10, 100 + 10, Color::White);
 
+    int numberLetter;
+    int flagCorrect = 0;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     //Результат
@@ -127,15 +134,24 @@ int main() {
     Text textCorrectTypes;
     Text textIncorrectTypes;
 
+    int sumLetters = 0;
+    int correctTypes = 0;
+    int incorrectTypes = 0;
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    int checkMode = 0;          //0 - Menu; 1 - Difficult; 2 - Game; 4 - Result
+
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
-            modeMenu(window, ev, buttonMenu);
-            modeDifficult(window, ev, buttonDifficult, logOutButton);
-            modeGame(window, ev, logOutButton, refreshButton, clock, cube, letter);
-            modeResult(window, ev, logOutButton);
+            modeMenu(window, ev, buttonMenu, numberButton, checkMode);
+            modeDifficult(window, ev, buttonDifficult, logOutButton, numberDifficult, 
+                          checkMode, sumLetters, correctTypes, incorrectTypes);
+            modeGame(window, ev, logOutButton, refreshButton, clock, cube, letter, checkMode, 
+            flagStart, sumLetters, numberLetter, correctTypes, flagCorrect, incorrectTypes);
+            modeResult(window, ev, logOutButton, checkMode, sumLetters, correctTypes, incorrectTypes);
         }
 
         window.clear();
@@ -149,10 +165,12 @@ int main() {
                 windowDifficult(window, logOutButton, buttonDifficult[0], buttonDifficult[1], buttonDifficult[2]);
                 break;
             case 2 :
-                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, clock, timer, cube, letter, letters);
+                windowGame(window, board, typeGamelvl, noticeMessage, timeMessage, logOutButton, refreshButton, 
+                           clock, timer, cube, letter, letters, flagStart, checkMode, numberDifficult, flagCorrect, 
+                           correctTypes, incorrectTypes, sumLetters, numberLetter);
                 break;
             case 3:
-                windowResult(window, font, titleResult, textSumLetters, textCorrectTypes, textIncorrectTypes, logOutButton);
+                windowResult(window, font, titleResult, textSumLetters, textCorrectTypes, textIncorrectTypes, logOutButton, sumLetters, correctTypes, incorrectTypes);
                 break;
         }
 
