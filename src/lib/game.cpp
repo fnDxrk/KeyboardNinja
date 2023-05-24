@@ -99,4 +99,8 @@ void checkCorrect(Event& ev, int& numberLetter, int& correctTypes, int& flagCorr
         flagCorrect = 1;
         sumLetters++;
     }
+    else if (numberLetter != ev.key.code && ev.key.code >= 0 && ev.key.code < 26) {
+        incorrectTypes++;
+        sumLetters++;
+    }
 }
