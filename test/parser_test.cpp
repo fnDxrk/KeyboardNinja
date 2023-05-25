@@ -4,6 +4,7 @@
 #include <difficult.h>
 #include <menu.h>
 #include <game.h>
+#include <mode.h>
 
 CTEST (ctest, loadFontFromFile) {
     Font fontTrue;
@@ -90,4 +91,51 @@ CTEST (ctest, startPositionCube) {
     std::string letters[26];
     startPositionCube(xPos, cube, numberLetter, letter, letters);
     ASSERT_TRUE(cube.getPosition().x == xPos);
+}
+
+CTEST(renderwindow_test, mode_result_test) {
+    RenderWindow window(VideoMode(800, 600), "Mode Result Test");
+
+    RectangleShape logOutButton(sf::Vector2f(100, 50));
+    int checkMode = 3;
+    int sumLetters = 10;
+    int correctTypes = 5;
+    int incorrectTypes = 2;
+
+    Event ev;
+    ev.type = Event::KeyPressed;
+    ev.key.code = Keyboard::Escape;
+    modeResult(window, ev, logOutButton, checkMode, sumLetters, correctTypes, incorrectTypes);
+
+    ASSERT_EQUAL(0, checkMode);
+    ASSERT_EQUAL(0, sumLetters);
+    ASSERT_EQUAL(0, correctTypes);
+    ASSERT_EQUAL(0, incorrectTypes);
+}
+
+CTEST(renderwindow_test, mode_menu_test) {
+    RenderWindow window(VideoMode(800, 600), "Mode Menu Test");
+    Font font;
+    Text buttonMenu[2];
+    buttonMenu[0].setFont(font);
+    buttonMenu[0].setString("Start");
+    buttonMenu[1].setFont(font);
+    buttonMenu[1].setString("Exit");
+    int numberButton = 0;
+    int checkMode = 0;
+    Event ev;
+    ev.type = Event::KeyPressed;
+
+    ev.key.code = Keyboard::Up;
+    modeMenu(window, ev, buttonMenu, numberButton, checkMode);
+    ASSERT_EQUAL(1, numberButton);
+    
+    ev.key.code = Keyboard::Down;
+    modeMenu(window, ev, buttonMenu, numberButton, checkMode);
+    ASSERT_EQUAL(0, numberButton);
+    
+    ev.key.code = Keyboard::Enter;
+    numberButton = 1;
+    modeMenu(window, ev, buttonMenu, numberButton, checkMode);
+    ASSERT_EQUAL(0, window.isOpen());
 }
